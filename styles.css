@@ -1,0 +1,39 @@
+#timer-1 {
+    width:500px;
+    height:150px;
+    margin-right: auto;
+    margin-top: 30vh;
+    margin-left:auto;
+    border: 3px solid green;
+  display:flex;  
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.field {
+    display: block;
+    margin:15px;
+      flex-basis: calc((100% - 30px) / 4);
+
+}
+.value {
+    display: block;
+    border: 2px solid black;
+    color:red;
+   background-color: #b9b3b3;
+    font-size: 60px;
+    text-align: center;
+}
+.label {
+    display:block;
+    margin-top: 10px;
+        border: 2px solid black;
+
+    font-size: 24px;
+    color: black;
+    background-color: #b9b3b3;
+        text-align: center;
+
+}
