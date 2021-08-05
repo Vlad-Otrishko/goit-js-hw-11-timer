@@ -1,63 +1,74 @@
-const timerRef = document.querySelector(".timer");
-const clockFaceDaysRef = document.querySelector('[data-value="days"]');
-const clockFaceHoursRef = document.querySelector('[data-value="hours"]');
-const clockFaceMinsRef = document.querySelector('[data-value="mins"]');
-const clockFaceSecsRef = document.querySelector('[data-value="secs"]');
 
+//таймер запускается по клику на него 
 
 
 class CountdownTimer {
-    constructor(targetDate) {
-        this.selector = timerRef.id; //id, указанный в html разметке будет присвоен создаваемому экземпляру класса
-        this.intervalId = null;
-        this.targetDate = new Date(targetDate);
-     
-    }
-    run() {
-            this.intervalId = setInterval(() => {
-                const time = this.targetDate - Date.now();
-                const humanFormatTime = timeComponents(time);
-                updateClockFace(humanFormatTime);
-            }, 1000);
-        
-    }
-    stop() {
-        clearInterval(this.intervalId);
-    }
-}
+  //привязка компонентов таймера к элементам HTML разметки
+  constructor(selector, targetDate) {
+    this.selector = document.querySelector(`${selector}`); //id = selector  будет указан в параметрах экземпляра класса
 
-// функция перевода милисекунд в дни,ч асы, минуты, секунды
-function timeComponents(time) {
+    this.timerDaysRef = this.selector.firstElementChild.firstElementChild;
+    this.timerHoursRef =
+      this.selector.firstElementChild.nextElementSibling.firstElementChild;
+    this.timerMinsRef =
+      this.selector.lastElementChild.previousElementSibling.firstElementChild;
+    this.timerSecsRef = this.selector.lastElementChild.firstElementChild;
+
+    this.intervalId = null;
+    this.targetDate = new Date(targetDate);
+    if (this.targetDate < Date.now()) {
+      this.alarm();
+    }
+    this.selector.addEventListener("click", () => {
+      this.selector.classList.toggle("running");
+      if (this.selector.classList.contains("running")) {
+        this.run();
+      } else {
+        this.stop();
+      }
+    });
+  }
+    // методы класса
+  alarm() {//сообщает, что в экземпляре установлена неправильная дата назначения
+          return this.selector.insertAdjacentHTML('afterend', "<div style='background-color:tomato;'><p style='color:yellow; font-size:30px;font-weight:700;'>CANNOT SET THE DATE FROM THE PAST AS TARGET DATE FOR COUNTDOWN!!! SET ANOTHER DATE!</p></div>");
+  };
+  run() {
+    this.intervalId = setInterval(() => {
+      const time = this.targetDate - Date.now();
+      if (time < 1000) { this.timerSecsRef.textContent = '00'; return this.stop();}
+      const humanFormatTime = this.timeComponents(time);
+      this.updateClockFace(humanFormatTime);
+    }, 1000);
+  };
+  stop() {
+    clearInterval(this.intervalId);
+  };
+  // метод перевода милисекунд в дни,часы, минуты, секунды
+  timeComponents(time) {
     const secs = String(Math.floor((time % (1000 * 60)) / 1000)).padStart(2,'0');
     const mins = String(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60))).padStart(2,'0');
     const hours = String(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2,'0');
     const days = String(Math.floor(time / (1000 * 60 * 60 * 24))).padStart(2, '0');
     return { days, hours, mins, secs };
-}
-// Функция вывода значений таймера в интерфейс
-function updateClockFace({ days, hours, mins, secs }=timeComponents) {
-    clockFaceDaysRef.textContent = days;
-    clockFaceDaysRef.nextElementSibling.textContent =days=== "01" ? "day" : "days";
+  };
+// метод вывода значений таймера в интерфейс
+ updateClockFace({ days, hours, mins, secs }=this.timeComponents) {
+    this.timerDaysRef.textContent = days;
+    this.timerDaysRef.nextElementSibling.textContent =days=== "01" ? "day" : "days";
 
-    clockFaceHoursRef.textContent = hours;
-    clockFaceHoursRef.nextElementSibling.textContent = hours=== '01' ? "hour" : "hours";
+    this.timerHoursRef.textContent = hours;
+    this.timerHoursRef.nextElementSibling.textContent = hours=== '01' ? "hour" : "hours";
 
-    clockFaceMinsRef.textContent = mins;
-    clockFaceMinsRef.nextElementSibling.textContent = mins=== '01' ? "minute" : "minutes";
+    this.timerMinsRef.textContent = mins;
+    this.timerMinsRef.nextElementSibling.textContent = mins=== '01' ? "minute" : "minutes";
 
-    clockFaceSecsRef.textContent = secs;
-    clockFaceSecsRef.nextElementSibling.textContent = secs === '01' ? 'second' : 'seconds';
+    this.timerSecsRef.textContent = secs;
+    this.timerSecsRef.nextElementSibling.textContent = secs === '01' ? 'second' : 'seconds';
     
+  };
 }
-timer = new CountdownTimer("Aug 17, 2022"); //создаем экземпляр класса,и задаем целевую дату/ время
 
 
-//запуск и остановк тайцмера по клику мыши
-timerRef.addEventListener("click", () => {
-  timerRef.classList.toggle("running");
-    if (timerRef.classList.contains("running")) {
-        timer.run();
-    } else { timer.stop(); }
-});
+timer = new CountdownTimer("#timer-1","Aug 09, 2021 21:26"); //создаем экземпляр класса,и задаем целевую дату/ время
 
 

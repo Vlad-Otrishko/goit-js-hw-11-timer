@@ -4,11 +4,14 @@
     margin-right: auto;
     margin-top: 30vh;
     margin-left:auto;
-    border: 3px solid green;
+    
   display:flex;  
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
+ border: 3px solid green;
+ background-color: rgb(196, 228, 247);
+
   
 }
 
